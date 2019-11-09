@@ -1,0 +1,9 @@
+C:\Users\Harry Barnett\Engineering45\AilenAttack\AlienAttack\AlienAttack\bin\Debug\AlienAttack.exe.config
+C:\Users\Harry Barnett\Engineering45\AilenAttack\AlienAttack\AlienAttack\bin\Debug\AlienAttack.exe
+C:\Users\Harry Barnett\Engineering45\AilenAttack\AlienAttack\AlienAttack\bin\Debug\AlienAttack.pdb
+C:\Users\Harry Barnett\Engineering45\AilenAttack\AlienAttack\AlienAttack\obj\Debug\AlienAttack.csprojAssemblyReference.cache
+C:\Users\Harry Barnett\Engineering45\AilenAttack\AlienAttack\AlienAttack\obj\Debug\AlienAttack.Properties.Resources.resources
+C:\Users\Harry Barnett\Engineering45\AilenAttack\AlienAttack\AlienAttack\obj\Debug\AlienAttack.csproj.GenerateResource.cache
+C:\Users\Harry Barnett\Engineering45\AilenAttack\AlienAttack\AlienAttack\obj\Debug\AlienAttack.exe
+C:\Users\Harry Barnett\Engineering45\AilenAttack\AlienAttack\AlienAttack\obj\Debug\AlienAttack.pdb
+C:\Users\Harry Barnett\Engineering45\AilenAttack\AlienAttack\AlienAttack\obj\Debug\AlienAttack.Form1.resources
