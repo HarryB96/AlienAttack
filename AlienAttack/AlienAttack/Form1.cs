@@ -16,7 +16,12 @@ namespace AlienAttack
         bool goRight;
         bool isPressed;
         int playerSpeed = 10;
+        int enemySpeed = 5;
         Random rnd = new Random();
+        static List<Enemy> enemies = new List<Enemy>();
+        static Enemy enemyToRemove = null;
+        int playerHealth = 100;
+
         public Form1()
         {
             InitializeComponent();
@@ -24,7 +29,6 @@ namespace AlienAttack
             if (timer1.Enabled)
             {
                 makeBasicEnemies(6);
-                makeMediumEnemies(0);
             }
         }
         private void KeyIsDown(object sender, KeyEventArgs e)
@@ -62,6 +66,15 @@ namespace AlienAttack
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            //win
+            if (enemies.Count == 0)
+            {
+                gameOver();
+                MessageBox.Show("Congratulations you win!");
+            }
+
+            
+            //player movement
             if (goLeft && player.Left > 0)
             {
                 player.Left -= playerSpeed;
@@ -70,31 +83,92 @@ namespace AlienAttack
             {
                 player.Left += playerSpeed;
             }
-            foreach (Control y in this.Controls)
+
+            //bullet movement
+            foreach (Control bullet in this.Controls)
             {
-                if (y is PictureBox && (y.Tag == "bullet"))
+                if (bullet is PictureBox && (bullet.Tag == "bullet"))
                 {
-                    y.Top -= 20;
+                    bullet.Top -= 20;
                 }
-                if (((PictureBox)y).Top < this.Height - 600)
+                if (((PictureBox)bullet).Top < this.Height - 600)
                 {
-                    this.Controls.Remove(y);
+                    this.Controls.Remove(bullet);
+                    ((PictureBox)bullet).Dispose();
                 }
             }
 
-            foreach (Control i in this.Controls)
+            //bullet interaction
+            foreach (Enemy basicEnemy in enemies)
             {
-                foreach (Control j in this.Controls)
+                foreach (Control bullet in this.Controls)
                 {
-                    if (i is PictureBox && i.Tag == "basic enemy")
+                    if (basicEnemy.pictureBox is PictureBox && basicEnemy.pictureBox.Tag == "basic enemy")
                     {
-                        if (j is PictureBox && j.Tag == "bullet")
+                        if (bullet is PictureBox && bullet.Tag == "bullet")
                         {
-                            if (i.Bounds.IntersectsWith(j.Bounds))
+                            if (basicEnemy.pictureBox.Bounds.IntersectsWith(bullet.Bounds))
                             {
-                                this.Controls.Remove(i);
-                                this.Controls.Remove(j);
+                                this.Controls.Remove(basicEnemy.pictureBox);
+                                enemyToRemove = basicEnemy;
+                                this.Controls.Remove(bullet);
                             }
+                        }
+                    }
+                }
+            }
+            if (enemyToRemove != null)
+            {
+                enemies.Remove(enemyToRemove);
+                enemyToRemove = null;
+            }
+
+            //enemy movement
+            foreach (Enemy enemy in enemies)
+            {
+                if (enemy.Direction == "left" && enemy.pictureBox.Left > 0)
+                {
+                    enemy.pictureBox.Left -= enemySpeed;
+                    enemy.Direction = "left";
+                }
+                if (enemy.Direction == "left" && enemy.pictureBox.Left == 0)
+                {
+                    enemy.pictureBox.Left += enemySpeed;
+                    enemy.Direction = "right";
+                }
+                if (enemy.Direction == "right" && enemy.pictureBox.Left < 730)
+                {
+                    enemy.pictureBox.Left += enemySpeed;
+                    enemy.Direction = "right";
+                }
+                if (enemy.Direction == "right" && enemy.pictureBox.Left == 730)
+                {
+                    enemy.pictureBox.Left -= enemySpeed;
+                    enemy.Direction = "left";
+                }
+                
+            }
+            
+        }
+
+        //Bullet timer
+        private void timer2_Tick(object sender, EventArgs e)
+        {
+            foreach (var enemy in enemies)
+            {
+                if (enemy.pictureBox.Left == player.Left)
+                {
+                    enemyShoot();
+                }
+                foreach (Control enemyBullet in this.Controls)
+                {
+                    if (enemyBullet is PictureBox && enemyBullet.Tag == "enemyBullet")
+                    {
+                        enemyBullet.Top += 10;
+                        if (enemyBullet.Top == this.Bottom)
+                        {
+                            this.Controls.Remove(enemyBullet);
+                            ((PictureBox)enemyBullet).Dispose();
                         }
                     }
                 }
@@ -115,43 +189,71 @@ namespace AlienAttack
 
         private void makeBasicEnemies(int number)
         {
-            int i = 0;
-            while (i < number)
+            
+            for (int i = 0; i < number; i++)
             {
                 PictureBox basic = new PictureBox();
                 basic.Size = new Size(50, 50);
                 basic.Tag = "basic enemy";
                 basic.BackColor = System.Drawing.Color.Blue;
-                int x = rnd.Next(0, 16);
-                int y = rnd.Next(0, 40);
-                basic.Left = x * 50;
-                basic.Top = y * 10;
-                this.Controls.Add(basic);
-                basic.BringToFront();
-                i++;
-            }
+                                
+                var basicEnemy = new Enemy()
+                {
+                    enemyType = EnemyType.basic,
+                    pictureBox = basic
+                    
+                };
+                enemies.Add(basicEnemy);
 
-        }
-        private void makeMediumEnemies(int number)
-        {
-            int i = 0;
-            while (i < number)
+                
+            }
+            foreach (var enemy in enemies)
             {
-                PictureBox medium = new PictureBox();
-                medium.Size = new Size(100, 50);
-                medium.Tag = "medium enemy";
-                medium.BackColor = System.Drawing.Color.Yellow;
-                medium.Left = rnd.Next(0, 730);
-                medium.Top = rnd.Next(0, 400);
-                this.Controls.Add(medium);
-                medium.BringToFront();
-                i++;
+                enemy.pictureBox.Left = rnd.Next(0, 15) * 50;
+                enemy.pictureBox.Top = rnd.Next(0, 8) * 50;
+                this.Controls.Add(enemy.pictureBox);
+                enemy.pictureBox.BringToFront();
+                enemy.Direction = "left";
             }
-
         }
+
+        private void enemyShoot()
+        {
+            foreach (Enemy enemy in enemies)
+            {
+                PictureBox enemyBullet = new PictureBox();
+                enemyBullet.Size = new Size(5, 5);
+                enemyBullet.Tag = "enemyBullet";
+                enemyBullet.BackColor = System.Drawing.Color.Green;
+                enemyBullet.Left = enemy.pictureBox.Left + enemy.pictureBox.Width / 2;
+                enemyBullet.Top = enemy.pictureBox.Bottom;
+                this.Controls.Add(enemyBullet);
+                enemyBullet.BringToFront();
+                
+            }
+            
+        }
+
         private void gameOver()
         {
             timer1.Stop();
+            timer2.Stop();
         }
+
+        
+    }
+
+    public enum EnemyType
+    {
+        basic, medium
+    }
+    public class Enemy
+    {
+        public EnemyType enemyType { get; set; }
+        public PictureBox pictureBox { get; set; }
+        private string direction;
+        public string Direction { get => direction; set => direction = value; }
+
+        
     }
 }
