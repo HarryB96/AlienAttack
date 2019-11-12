@@ -73,7 +73,21 @@ namespace AlienAttack
                 MessageBox.Show("Congratulations you win!");
             }
 
-            
+            //health bar and lose
+            if (playerHealth > 1)
+            {
+                HealthBar.Value = playerHealth;
+            }
+            else
+            {
+                gameOver();
+                MessageBox.Show("You died");
+            }
+            if (playerHealth < 50)
+            {
+                HealthBar.ForeColor = System.Drawing.Color.Red;
+            }
+
             //player movement
             if (goLeft && player.Left > 0)
             {
@@ -91,14 +105,14 @@ namespace AlienAttack
                 {
                     bullet.Top -= 20;
                 }
-                if (((PictureBox)bullet).Top < this.Height - 600)
+                if (bullet is PictureBox && ((PictureBox)bullet).Top == this.Top && bullet.Tag == "bullet")
                 {
                     this.Controls.Remove(bullet);
                     ((PictureBox)bullet).Dispose();
                 }
             }
 
-            //bullet interaction
+            //player bullet interaction
             foreach (Enemy basicEnemy in enemies)
             {
                 foreach (Control bullet in this.Controls)
@@ -147,6 +161,20 @@ namespace AlienAttack
                     enemy.Direction = "left";
                 }
                 
+            }
+
+            //enemy bullet interaction
+            foreach (Control enemyBullet in this.Controls)
+            {
+                if (enemyBullet is PictureBox && enemyBullet.Tag == "enemyBullet")
+                {
+                    if (((PictureBox)enemyBullet).Bounds.IntersectsWith(player.Bounds))
+                    {
+                        playerHealth -= 35;
+                        this.Controls.Remove(enemyBullet);
+                        ((PictureBox)enemyBullet).Dispose();
+                    }
+                }
             }
             
         }
@@ -210,7 +238,7 @@ namespace AlienAttack
             foreach (var enemy in enemies)
             {
                 enemy.pictureBox.Left = rnd.Next(0, 15) * 50;
-                enemy.pictureBox.Top = rnd.Next(0, 8) * 50;
+                enemy.pictureBox.Top = rnd.Next(1, 8) * 50;
                 this.Controls.Add(enemy.pictureBox);
                 enemy.pictureBox.BringToFront();
                 enemy.Direction = "left";
@@ -239,8 +267,6 @@ namespace AlienAttack
             timer1.Stop();
             timer2.Stop();
         }
-
-        
     }
 
     public enum EnemyType
@@ -253,7 +279,5 @@ namespace AlienAttack
         public PictureBox pictureBox { get; set; }
         private string direction;
         public string Direction { get => direction; set => direction = value; }
-
-        
     }
 }
