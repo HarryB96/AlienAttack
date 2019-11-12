@@ -21,15 +21,13 @@ namespace AlienAttack
         static List<Enemy> enemies = new List<Enemy>();
         static Enemy enemyToRemove = null;
         int playerHealth = 100;
+        int stage = 1;
 
         public Form1()
         {
             InitializeComponent();
-
-            if (timer1.Enabled)
-            {
-                makeBasicEnemies(6);
-            }
+            makeBasicEnemies(6);
+            
         }
         private void KeyIsDown(object sender, KeyEventArgs e)
         {
@@ -66,12 +64,22 @@ namespace AlienAttack
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            //win
-            if (enemies.Count == 0)
+            if (enemies.Count == 0 && stage == 1)
+            {
+                makeMediumEnemies(6);
+                stage = 2;
+
+            }
+
+            if (enemies.Count == 0 && stage == 2)
             {
                 gameOver();
                 MessageBox.Show("Congratulations you win!");
+
+
             }
+
+
 
             //health bar and lose
             if (playerHealth > 1)
@@ -80,12 +88,9 @@ namespace AlienAttack
             }
             else
             {
+                HealthBar.Value = 0;
                 gameOver();
-                MessageBox.Show("You died");
-            }
-            if (playerHealth < 50)
-            {
-                HealthBar.ForeColor = System.Drawing.Color.Red;
+                MessageBox.Show("Game Over","You died,would you like to retry?", MessageBoxButtons.YesNo);
             }
 
             //player movement
@@ -113,19 +118,24 @@ namespace AlienAttack
             }
 
             //player bullet interaction
-            foreach (Enemy basicEnemy in enemies)
+            foreach (Enemy enemy in enemies)
             {
                 foreach (Control bullet in this.Controls)
                 {
-                    if (basicEnemy.pictureBox is PictureBox && basicEnemy.pictureBox.Tag == "basic enemy")
+                    if (enemy.pictureBox is PictureBox && enemy.pictureBox.Tag.ToString().Contains("enemy"))
                     {
                         if (bullet is PictureBox && bullet.Tag == "bullet")
                         {
-                            if (basicEnemy.pictureBox.Bounds.IntersectsWith(bullet.Bounds))
+                            if (enemy.pictureBox.Bounds.IntersectsWith(bullet.Bounds))
                             {
-                                this.Controls.Remove(basicEnemy.pictureBox);
-                                enemyToRemove = basicEnemy;
                                 this.Controls.Remove(bullet);
+                                ((PictureBox)bullet).Dispose();
+                                enemy.Health -= 1;
+                                if (enemy.Health == 0)
+                                {
+                                    this.Controls.Remove(enemy.pictureBox);
+                                    enemyToRemove = enemy;
+                                }
                             }
                         }
                     }
@@ -229,19 +239,46 @@ namespace AlienAttack
                 {
                     enemyType = EnemyType.basic,
                     pictureBox = basic
-                    
                 };
-                enemies.Add(basicEnemy);
-
-                
+                enemies.Add(basicEnemy);  
             }
-            foreach (var enemy in enemies)
+
+            foreach (Enemy enemy in enemies)
             {
                 enemy.pictureBox.Left = rnd.Next(0, 15) * 50;
                 enemy.pictureBox.Top = rnd.Next(1, 8) * 50;
                 this.Controls.Add(enemy.pictureBox);
                 enemy.pictureBox.BringToFront();
                 enemy.Direction = "left";
+                enemy.Health = 1;
+            }
+        }
+
+        private void makeMediumEnemies(int number)
+        {
+            for (int i = 0; i < number; i++)
+            {
+                PictureBox medium = new PictureBox();
+                medium.Size = new Size(100, 50);
+                medium.Tag = "medium enemy";
+                medium.BackColor = System.Drawing.Color.Yellow;
+
+                var mediumEnemy = new Enemy()
+                {
+                    enemyType = EnemyType.medium,
+                    pictureBox = medium
+                };
+                enemies.Add(mediumEnemy);
+            }
+
+            foreach (Enemy enemy in enemies)
+            {
+                enemy.pictureBox.Left = rnd.Next(0, 15) * 50;
+                enemy.pictureBox.Top = rnd.Next(1, 8) * 50;
+                this.Controls.Add(enemy.pictureBox);
+                enemy.pictureBox.BringToFront();
+                enemy.Direction = "right";
+                enemy.Health = 3;
             }
         }
 
@@ -249,15 +286,15 @@ namespace AlienAttack
         {
             foreach (Enemy enemy in enemies)
             {
-                PictureBox enemyBullet = new PictureBox();
-                enemyBullet.Size = new Size(5, 5);
-                enemyBullet.Tag = "enemyBullet";
-                enemyBullet.BackColor = System.Drawing.Color.Green;
-                enemyBullet.Left = enemy.pictureBox.Left + enemy.pictureBox.Width / 2;
-                enemyBullet.Top = enemy.pictureBox.Bottom;
-                this.Controls.Add(enemyBullet);
-                enemyBullet.BringToFront();
-                
+                PictureBox bullet = new PictureBox();
+                bullet.Size = new Size(5, 5);
+                bullet.Tag = "enemyBullet";
+                bullet.BackColor = System.Drawing.Color.Green;
+                bullet.Left = enemy.pictureBox.Left + enemy.pictureBox.Width / 2;
+                bullet.Top = enemy.pictureBox.Bottom;
+                this.Controls.Add(bullet);
+                bullet.BringToFront();
+
             }
             
         }
@@ -277,7 +314,11 @@ namespace AlienAttack
     {
         public EnemyType enemyType { get; set; }
         public PictureBox pictureBox { get; set; }
+
         private string direction;
         public string Direction { get => direction; set => direction = value; }
+
+        private int health;
+        public int Health { get => health; set => health = value; }
     }
 }
