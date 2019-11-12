@@ -26,9 +26,22 @@ namespace AlienAttack
         public Form1()
         {
             InitializeComponent();
-            makeBasicEnemies(6);
-            
         }
+
+        #region StartPage
+        private void button1_Click(object sender, EventArgs e)
+        {
+            StartPage.Dispose();
+            makeBasicEnemies(6);
+            timer1.Start();
+        }
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+        #endregion
+
+        #region PlayerInput
         private void KeyIsDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Left)
@@ -61,14 +74,16 @@ namespace AlienAttack
                 isPressed = false;
             }
         }
+        #endregion
 
+        #region Timers
         private void timer1_Tick(object sender, EventArgs e)
         {
             if (enemies.Count == 0 && stage == 1)
             {
                 makeMediumEnemies(6);
                 stage = 2;
-
+                
             }
 
             if (enemies.Count == 0 && stage == 2)
@@ -80,8 +95,7 @@ namespace AlienAttack
             }
 
 
-
-            //health bar and lose
+            #region HealthBarAndLose
             if (playerHealth > 1)
             {
                 HealthBar.Value = playerHealth;
@@ -90,9 +104,11 @@ namespace AlienAttack
             {
                 HealthBar.Value = 0;
                 gameOver();
-                MessageBox.Show("Game Over","You died,would you like to retry?", MessageBoxButtons.YesNo);
+                MessageBox.Show("Game Over");
             }
+            #endregion
 
+            #region PlayerMovement
             //player movement
             if (goLeft && player.Left > 0)
             {
@@ -102,8 +118,9 @@ namespace AlienAttack
             {
                 player.Left += playerSpeed;
             }
+            #endregion
 
-            //bullet movement
+            #region PlayerShooting
             foreach (Control bullet in this.Controls)
             {
                 if (bullet is PictureBox && (bullet.Tag == "bullet"))
@@ -116,7 +133,9 @@ namespace AlienAttack
                     ((PictureBox)bullet).Dispose();
                 }
             }
+            #endregion
 
+            #region BulletInteraction
             //player bullet interaction
             foreach (Enemy enemy in enemies)
             {
@@ -146,7 +165,9 @@ namespace AlienAttack
                 enemies.Remove(enemyToRemove);
                 enemyToRemove = null;
             }
+            #endregion
 
+            #region EnemyMovement
             //enemy movement
             foreach (Enemy enemy in enemies)
             {
@@ -172,7 +193,9 @@ namespace AlienAttack
                 }
                 
             }
+            #endregion
 
+            #region EnemyBulletInteraction
             //enemy bullet interaction
             foreach (Control enemyBullet in this.Controls)
             {
@@ -186,7 +209,7 @@ namespace AlienAttack
                     }
                 }
             }
-            
+            #endregion
         }
 
         //Bullet timer
@@ -212,6 +235,7 @@ namespace AlienAttack
                 }
             }
         }
+        #endregion
 
         private void makeBullet()
         {
@@ -296,7 +320,6 @@ namespace AlienAttack
                 bullet.BringToFront();
 
             }
-            
         }
 
         private void gameOver()
@@ -304,6 +327,8 @@ namespace AlienAttack
             timer1.Stop();
             timer2.Stop();
         }
+
+        
     }
 
     public enum EnemyType

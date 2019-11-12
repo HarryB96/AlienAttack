@@ -34,7 +34,11 @@
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.HealthBar = new System.Windows.Forms.ProgressBar();
             this.health = new System.Windows.Forms.Label();
+            this.StartPage = new System.Windows.Forms.Panel();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.player)).BeginInit();
+            this.StartPage.SuspendLayout();
             this.SuspendLayout();
             // 
             // player
@@ -48,7 +52,6 @@
             // 
             // timer1
             // 
-            this.timer1.Enabled = true;
             this.timer1.Interval = 20;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
@@ -76,11 +79,43 @@
             this.health.TabIndex = 2;
             this.health.Text = "Health";
             // 
+            // StartPage
+            // 
+            this.StartPage.BackColor = System.Drawing.SystemColors.Control;
+            this.StartPage.Controls.Add(this.button2);
+            this.StartPage.Controls.Add(this.button1);
+            this.StartPage.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.StartPage.Location = new System.Drawing.Point(0, 0);
+            this.StartPage.Name = "StartPage";
+            this.StartPage.Size = new System.Drawing.Size(784, 561);
+            this.StartPage.TabIndex = 3;
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(350, 309);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 1;
+            this.button2.Text = "Quit";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(350, 255);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 0;
+            this.button1.Text = "Start";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 561);
+            this.Controls.Add(this.StartPage);
             this.Controls.Add(this.health);
             this.Controls.Add(this.HealthBar);
             this.Controls.Add(this.player);
@@ -89,6 +124,7 @@
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyIsDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.KeyIsUp);
             ((System.ComponentModel.ISupportInitialize)(this.player)).EndInit();
+            this.StartPage.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -101,6 +137,9 @@
         private System.Windows.Forms.Timer timer2;
         private System.Windows.Forms.ProgressBar HealthBar;
         private System.Windows.Forms.Label health;
+        private System.Windows.Forms.Panel StartPage;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button1;
     }
 }
 
