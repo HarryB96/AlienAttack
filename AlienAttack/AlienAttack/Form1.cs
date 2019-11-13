@@ -22,6 +22,7 @@ namespace AlienAttack
         static Enemy enemyToRemove = null;
         int playerHealth = 100;
         int stage = 1;
+        int score;
 
         public Form1()
         {
@@ -83,15 +84,22 @@ namespace AlienAttack
             {
                 makeMediumEnemies(6);
                 stage = 2;
-                
+
             }
 
             if (enemies.Count == 0 && stage == 2)
             {
                 gameOver();
-                MessageBox.Show("Congratulations you win!");
-
-
+                
+                DialogResult dialogResult = MessageBox.Show("You Win", "Would you like to play again?", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    Application.Restart();
+                }
+                else if (dialogResult == DialogResult.No)
+                {
+                    Application.Exit();
+                }
             }
 
 
@@ -104,7 +112,15 @@ namespace AlienAttack
             {
                 HealthBar.Value = 0;
                 gameOver();
-                MessageBox.Show("Game Over");
+                DialogResult dialogResult = MessageBox.Show("Game Over", "Would you like to try again?", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    Application.Restart();
+                }
+                else if (dialogResult == DialogResult.No)
+                {
+                    Application.Exit();
+                }
             }
             #endregion
 
@@ -154,6 +170,14 @@ namespace AlienAttack
                                 {
                                     this.Controls.Remove(enemy.pictureBox);
                                     enemyToRemove = enemy;
+                                    if (enemy.pictureBox.Tag == "medium enemy")
+                                    {
+                                        score += 300;
+                                    }
+                                    else if (enemy.pictureBox.Tag =="basic enemy")
+                                    {
+                                        score += 100;
+                                    }
                                 }
                             }
                         }
@@ -191,7 +215,7 @@ namespace AlienAttack
                     enemy.pictureBox.Left -= enemySpeed;
                     enemy.Direction = "left";
                 }
-                
+
             }
             #endregion
 
@@ -242,7 +266,7 @@ namespace AlienAttack
             PictureBox bullet = new PictureBox();
             bullet.Size = new Size(5, 5);
             bullet.Tag = "bullet";
-            bullet.BackColor = System.Drawing.Color.Black;
+            bullet.BackColor = System.Drawing.Color.Red;
             bullet.Left = player.Left + player.Width / 2;
             bullet.Top = player.Top - 5;
             this.Controls.Add(bullet);
@@ -251,20 +275,20 @@ namespace AlienAttack
 
         private void makeBasicEnemies(int number)
         {
-            
+
             for (int i = 0; i < number; i++)
             {
                 PictureBox basic = new PictureBox();
                 basic.Size = new Size(50, 50);
                 basic.Tag = "basic enemy";
-                basic.BackColor = System.Drawing.Color.Blue;
-                                
+                basic.Image = Image.FromFile("C:\\Users\\Harry Barnett\\Engineering45\\AilenAttack\\AlienAttack\\AlienAttack\\Resources\\basicEnemy.png");
+
                 var basicEnemy = new Enemy()
                 {
                     enemyType = EnemyType.basic,
                     pictureBox = basic
                 };
-                enemies.Add(basicEnemy);  
+                enemies.Add(basicEnemy);
             }
 
             foreach (Enemy enemy in enemies)
@@ -283,9 +307,9 @@ namespace AlienAttack
             for (int i = 0; i < number; i++)
             {
                 PictureBox medium = new PictureBox();
-                medium.Size = new Size(100, 50);
+                medium.Size = new Size(100, 75);
                 medium.Tag = "medium enemy";
-                medium.BackColor = System.Drawing.Color.Yellow;
+                medium.Image = Image.FromFile("C:\\Users\\Harry Barnett\\Engineering45\\AilenAttack\\AlienAttack\\AlienAttack\\Resources\\mediumEnemy.png");
 
                 var mediumEnemy = new Enemy()
                 {
@@ -297,8 +321,8 @@ namespace AlienAttack
 
             foreach (Enemy enemy in enemies)
             {
-                enemy.pictureBox.Left = rnd.Next(0, 15) * 50;
-                enemy.pictureBox.Top = rnd.Next(1, 8) * 50;
+                enemy.pictureBox.Left = rnd.Next(0, 6) * 100;
+                enemy.pictureBox.Top = rnd.Next(1, 5) * 75;
                 this.Controls.Add(enemy.pictureBox);
                 enemy.pictureBox.BringToFront();
                 enemy.Direction = "right";
@@ -326,11 +350,9 @@ namespace AlienAttack
         {
             timer1.Stop();
             timer2.Stop();
+            
         }
-
-        
     }
-
     public enum EnemyType
     {
         basic, medium
@@ -346,4 +368,5 @@ namespace AlienAttack
         private int health;
         public int Health { get => health; set => health = value; }
     }
+    
 }
