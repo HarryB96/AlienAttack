@@ -22,7 +22,8 @@ namespace AlienAttack
         static Enemy enemyToRemove = null;
         int playerHealth = 100;
         int stage = 1;
-        int score;
+        int score = 0;
+        int time = 600;
 
         public Form1()
         {
@@ -35,6 +36,7 @@ namespace AlienAttack
             StartPage.Dispose();
             makeBasicEnemies(6);
             timer1.Start();
+            timer2.Start();
         }
         private void button2_Click(object sender, EventArgs e)
         {
@@ -152,7 +154,7 @@ namespace AlienAttack
             #endregion
 
             #region BulletInteraction
-            //player bullet interaction
+
             foreach (Enemy enemy in enemies)
             {
                 foreach (Control bullet in this.Controls)
@@ -190,6 +192,8 @@ namespace AlienAttack
                 enemyToRemove = null;
             }
             #endregion
+
+            label1.Text = "Score: " + score;
 
             #region EnemyMovement
             //enemy movement
@@ -256,6 +260,24 @@ namespace AlienAttack
                             ((PictureBox)enemyBullet).Dispose();
                         }
                     }
+                }
+            }
+            if (time > 0)
+            {
+                time -= timer2.Interval / 100;
+                label3.Text = "Time: " + time/10;
+            }
+            else
+            {
+                gameOver();
+                DialogResult dialogResult = MessageBox.Show("You ran out of time", "Would you like to try again?", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    Application.Restart();
+                }
+                else if (dialogResult == DialogResult.No)
+                {
+                    Application.Exit();
                 }
             }
         }
