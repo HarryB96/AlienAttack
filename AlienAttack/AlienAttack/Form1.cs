@@ -28,6 +28,8 @@ namespace AlienAttack
         public Form1()
         {
             InitializeComponent();
+            FailPanel.Hide();
+            WinPage.Hide();
         }
 
         #region StartPage
@@ -44,18 +46,42 @@ namespace AlienAttack
         }
         #endregion
 
+        #region FailPage
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Application.Restart();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+        #endregion
+
+        #region WinPage
+        private void button5_Click(object sender, EventArgs e)
+        {
+            Application.Restart();
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+        #endregion
+
         #region PlayerInput
         private void KeyIsDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Left)
+            if (e.KeyCode == Keys.Left || e.KeyCode == Keys.A)
             {
                 goLeft = true;
             }
-            if (e.KeyCode == Keys.Right)
+            if (e.KeyCode == Keys.Right || e.KeyCode == Keys.D)
             {
                 goRight = true;
             }
-            if (e.KeyCode == Keys.Z && !isPressed)
+            if (e.KeyCode == Keys.Space && !isPressed)
             {
                 isPressed = true;
                 makeBullet();
@@ -64,11 +90,11 @@ namespace AlienAttack
 
         private void KeyIsUp(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Left)
+            if (e.KeyCode == Keys.Left || e.KeyCode == Keys.A)
             {
                 goLeft = false;
             }
-            if (e.KeyCode == Keys.Right)
+            if (e.KeyCode == Keys.Right || e.KeyCode == Keys.D)
             {
                 goRight = false;
             }
@@ -91,17 +117,9 @@ namespace AlienAttack
 
             if (enemies.Count == 0 && stage == 2)
             {
+                WinPage.Show();
+                WinPage.BringToFront();
                 gameOver();
-                
-                DialogResult dialogResult = MessageBox.Show("You Win", "Would you like to play again?", MessageBoxButtons.YesNo);
-                if (dialogResult == DialogResult.Yes)
-                {
-                    Application.Restart();
-                }
-                else if (dialogResult == DialogResult.No)
-                {
-                    Application.Exit();
-                }
             }
 
 
@@ -113,16 +131,9 @@ namespace AlienAttack
             else
             {
                 HealthBar.Value = 0;
+                FailPanel.Show();
+                FailPanel.BringToFront();
                 gameOver();
-                DialogResult dialogResult = MessageBox.Show("Game Over", "Would you like to try again?", MessageBoxButtons.YesNo);
-                if (dialogResult == DialogResult.Yes)
-                {
-                    Application.Restart();
-                }
-                else if (dialogResult == DialogResult.No)
-                {
-                    Application.Exit();
-                }
             }
             #endregion
 
@@ -375,20 +386,4 @@ namespace AlienAttack
             
         }
     }
-    public enum EnemyType
-    {
-        basic, medium
-    }
-    public class Enemy
-    {
-        public EnemyType enemyType { get; set; }
-        public PictureBox pictureBox { get; set; }
-
-        private string direction;
-        public string Direction { get => direction; set => direction = value; }
-
-        private int health;
-        public int Health { get => health; set => health = value; }
-    }
-    
 }
