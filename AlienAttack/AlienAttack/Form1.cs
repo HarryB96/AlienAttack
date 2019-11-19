@@ -24,6 +24,7 @@ namespace AlienAttack
         int stage = 1;
         int score = 0;
         int time = 600;
+        int hitsRemaining = 3;
 
         public Form1()
         {
@@ -119,6 +120,7 @@ namespace AlienAttack
             {
                 WinPage.Show();
                 WinPage.BringToFront();
+                WinScore.Text = "Your score is: " + ((score + time) * hitsRemaining);
                 gameOver();
             }
 
@@ -235,7 +237,6 @@ namespace AlienAttack
             #endregion
 
             #region EnemyBulletInteraction
-            //enemy bullet interaction
             foreach (Control enemyBullet in this.Controls)
             {
                 if (enemyBullet is PictureBox && enemyBullet.Tag == "enemyBullet")
@@ -243,6 +244,7 @@ namespace AlienAttack
                     if (((PictureBox)enemyBullet).Bounds.IntersectsWith(player.Bounds))
                     {
                         playerHealth -= 35;
+                        hitsRemaining--;
                         this.Controls.Remove(enemyBullet);
                         ((PictureBox)enemyBullet).Dispose();
                     }
