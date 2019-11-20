@@ -25,47 +25,41 @@ namespace AlienAttack
         int score = 0;
         int time = 600;
         int hitsRemaining = 3;
+        Panel StartPanel = new Panel();
+        Panel Instructions = new Panel();
 
         public Form1()
         {
             InitializeComponent();
-            FailPanel.Hide();
-            WinPage.Hide();
+            StartPanelShow();
         }
 
-        #region StartPage
+        #region Buttons
         private void button1_Click(object sender, EventArgs e)
         {
-            StartPage.Dispose();
+            StartPanel.Dispose();
+            Instructions.Dispose();
             makeBasicEnemies(6);
             timer1.Start();
             timer2.Start();
         }
-        private void button2_Click(object sender, EventArgs e)
-        {
-            Application.Exit();
-        }
-        #endregion
 
-        #region FailPage
-        private void button3_Click(object sender, EventArgs e)
+        private void Instructions_Click(object sender, EventArgs e)
         {
-            Application.Restart();
+            InstructionsShow();
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        private void menu_Click(object sender, EventArgs e)
         {
-            Application.Exit();
+            StartPanelShow();
+            Instructions.Hide();
         }
-        #endregion
-
-        #region WinPage
-        private void button5_Click(object sender, EventArgs e)
+        private void Restart_Click(object sender, EventArgs e)
         {
             Application.Restart();
         }
 
-        private void button6_Click(object sender, EventArgs e)
+        private void Quit_Click(object sender, EventArgs e)
         {
             Application.Exit();
         }
@@ -118,9 +112,7 @@ namespace AlienAttack
 
             if (enemies.Count == 0 && stage == 2)
             {
-                WinPage.Show();
-                WinPage.BringToFront();
-                label6.Text = "Final Score: " + ((score + time)*hitsRemaining);
+                WinPanelShow();
                 gameOver();
             }
 
@@ -133,8 +125,7 @@ namespace AlienAttack
             else
             {
                 HealthBar.Value = 0;
-                FailPanel.Show();
-                FailPanel.BringToFront();
+                LosePanelShow();
                 gameOver();
             }
             #endregion
@@ -388,5 +379,163 @@ namespace AlienAttack
             timer2.Stop();
             
         }
+
+        #region WinPanel
+        private void WinPanelShow()
+        {
+            Panel WinPanel = new Panel();
+            Label WinTitle = new Label();
+            Label FinalScore = new Label();
+            Button Replay = new Button();
+            Button Quit = new Button();
+
+            WinPanel.Size = new Size(784, 561);
+            WinPanel.Location = new Point(0, 0);
+            WinPanel.BackColor = System.Drawing.Color.Black;
+
+            WinTitle.Text = "You Win";
+            WinTitle.Location = new Point(277, 159);
+            WinTitle.ForeColor = System.Drawing.Color.White;
+            WinTitle.Size = new Size(400, 55);
+            WinTitle.Font = new Font("Microsoft Sans Serif", 36, FontStyle.Bold);
+            
+            FinalScore.Text = "Final Score: " + ((score + time) * hitsRemaining);
+            FinalScore.ForeColor = System.Drawing.Color.White;
+            FinalScore.Size = new Size(200, 20);
+            FinalScore.Location = new Point(357, 265);
+            FinalScore.Font = new Font("Microsoft Sans Serif", 12, FontStyle.Regular);
+
+            Replay.Location = new Point(209, 337);
+            Replay.BackColor = System.Drawing.Color.AliceBlue;
+            Replay.Text = "Replay";
+            Replay.Click += Restart_Click;
+
+            Quit.Location = new Point(512, 337);
+            Quit.BackColor = System.Drawing.Color.AliceBlue;
+            Quit.Text = "Quit";
+            Quit.Click += Quit_Click;
+
+            this.Controls.Add(WinPanel);
+            WinPanel.BringToFront();
+            WinPanel.Controls.Add(WinTitle);
+            WinPanel.Controls.Add(FinalScore);
+            WinPanel.Controls.Add(Replay);
+            WinPanel.Controls.Add(Quit);
+        }
+        #endregion
+
+        #region LosePanel
+        private void LosePanelShow()
+        {
+            Panel LosePanel = new Panel();
+            Label LoseTitle = new Label();
+            Button Retry = new Button();
+            Button Quit = new Button();
+
+            LosePanel.Size = new Size(784, 561);
+            LosePanel.Location = new Point(0, 0);
+            LosePanel.BackColor = System.Drawing.Color.Black;
+
+            LoseTitle.Text = "Game Over";
+            LoseTitle.Location = new Point(277, 159);
+            LoseTitle.ForeColor = System.Drawing.Color.White;
+            LoseTitle.Size = new Size(400, 55);
+            LoseTitle.Font = new Font("Microsoft Sans Serif", 36, FontStyle.Bold);
+
+            Retry.Location = new Point(209, 337);
+            Retry.BackColor = System.Drawing.Color.AliceBlue;
+            Retry.Text = "Replay";
+            Retry.Click += Restart_Click;
+
+            Quit.Location = new Point(512, 337);
+            Quit.BackColor = System.Drawing.Color.AliceBlue;
+            Quit.Text = "Quit";
+            Quit.Click += Quit_Click;
+
+            this.Controls.Add(LosePanel);
+            LosePanel.BringToFront();
+            LosePanel.Controls.Add(LoseTitle);
+            LosePanel.Controls.Add(Retry);
+            LosePanel.Controls.Add(Quit);
+        }
+        #endregion
+
+        #region StartPanel
+        private void StartPanelShow()
+        {
+            Label MenuTitle = new Label();
+            Button Start = new Button();
+            Button Instructions = new Button();
+            Button Quit = new Button();
+
+            StartPanel.Size = new Size(784, 561);
+            StartPanel.Location = new Point(0, 0);
+            StartPanel.BackColor = System.Drawing.Color.Black;
+
+            MenuTitle.Text = "Alien Attack";
+            MenuTitle.Location = new Point(144, 67);
+            MenuTitle.ForeColor = System.Drawing.Color.White;
+            MenuTitle.Size = new Size(400, 110);
+            MenuTitle.Font = new Font("Microsoft Sans Serif", 50, FontStyle.Bold);
+
+            Start.Location = new Point(350, 255);
+            Start.BackColor = System.Drawing.Color.AliceBlue;
+            Start.Text = "Start";
+            Start.Click += button1_Click;
+
+            Instructions.Location = new Point(350, 310);
+            Instructions.BackColor = System.Drawing.Color.AliceBlue;
+            Instructions.Text = "Controls";
+            Instructions.Click += Instructions_Click;
+
+            Quit.Location = new Point(350, 406);
+            Quit.BackColor = System.Drawing.Color.AliceBlue;
+            Quit.Text = "Quit";
+            Quit.Click += Quit_Click;
+
+            this.Controls.Add(StartPanel);
+            StartPanel.BringToFront();
+            StartPanel.Controls.Add(MenuTitle);
+            StartPanel.Controls.Add(Start);
+            StartPanel.Controls.Add(Instructions);
+            StartPanel.Controls.Add(Quit);
+        }
+        #endregion
+
+        #region InstructionsPanel
+        public void InstructionsShow()
+        {
+            Label InstructionsTitle = new Label();
+            Button Menu = new Button();
+            Button Start = new Button();
+
+            Instructions.Size = new Size(784, 561);
+            Instructions.Location = new Point(0, 0);
+            Instructions.BackColor = System.Drawing.Color.Black;
+
+            InstructionsTitle.Text = "Controls";
+            InstructionsTitle.Location = new Point(277, 159);
+            InstructionsTitle.ForeColor = System.Drawing.Color.White;
+            InstructionsTitle.Size = new Size(400, 55);
+            InstructionsTitle.Font = new Font("Microsoft Sans Serif", 36, FontStyle.Bold);
+
+            Start.Location = new Point(700, 0);
+            Start.BackColor = System.Drawing.Color.AliceBlue;
+            Start.Text = "Start";
+            Start.Click += button1_Click;
+
+            Menu.Location = new Point(0, 0);
+            Menu.BackColor = System.Drawing.Color.AliceBlue;
+            Menu.Text = "Menu";
+            Menu.Click += menu_Click;
+
+            this.Controls.Add(Instructions);
+            Instructions.Show();
+            Instructions.BringToFront();
+            Instructions.Controls.Add(InstructionsTitle);
+            Instructions.Controls.Add(Start);
+            Instructions.Controls.Add(Menu);
+        }
+        #endregion
     }
 }
