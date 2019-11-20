@@ -31,6 +31,7 @@ namespace AlienAttack
             InitializeComponent();
             FailPanel.Hide();
             WinPage.Hide();
+            //Instructions.Hide();
         }
 
         #region StartPage
@@ -387,5 +388,27 @@ namespace AlienAttack
             timer2.Stop();
             
         }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            StartPage.Hide();
+            Instructions.Enabled = true;
+            Instructions.Visible = true;
+            //Instructions.Show();
+            //Instructions.BringToFront();
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button14_Click(object sender, EventArgs e)
+        {
+            StartPage.Show();
+            //Instructions.Hide();
+            //Instructions.Dispose();
+        }
+
     }
 }
