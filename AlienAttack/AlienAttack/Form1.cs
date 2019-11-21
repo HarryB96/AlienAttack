@@ -559,12 +559,20 @@ namespace AlienAttack
             Button Menu = new Button();
             Button Start = new Button();
 
+            Label Move = new Label();
+            Label A = new Label();
+            Label D = new Label();
+            Label Left = new Label();
+            Label Right = new Label();
+            Label Shoot = new Label();
+            Label Space = new Label();
+
             Instructions.Size = new Size(784, 561);
             Instructions.Location = new Point(0, 0);
             Instructions.BackColor = System.Drawing.Color.Black;
 
             InstructionsTitle.Text = "Controls";
-            InstructionsTitle.Location = new Point(277, 159);
+            InstructionsTitle.Location = new Point(277, 100);
             InstructionsTitle.ForeColor = System.Drawing.Color.White;
             InstructionsTitle.Size = new Size(400, 55);
             InstructionsTitle.Font = new Font("Microsoft Sans Serif", 36, FontStyle.Bold);
@@ -579,12 +587,64 @@ namespace AlienAttack
             Menu.Text = "Menu";
             Menu.Click += Menu_Click;
 
+            Move.Text = "Move";
+            Move.Font = new Font("Microsoft Sans Serif", 12, FontStyle.Regular);
+            Move.ForeColor = System.Drawing.Color.White;
+            Move.Location = new Point(277, 210);
+
+            Shoot.Text = "Shoot";
+            Shoot.Font = new Font("Microsoft Sans Serif", 12, FontStyle.Regular);
+            Shoot.ForeColor = System.Drawing.Color.White;
+            Shoot.Location = new Point(277, 350);
+
+            A.ForeColor = System.Drawing.Color.Black;
+            A.BackColor = System.Drawing.Color.White;
+            A.Size = new Size(60, 60);
+            A.Font = new Font("Microsoft Sans Serif", 12, FontStyle.Bold);
+            A.Text = "A";
+            A.Location = new Point(100, 250);
+            
+            D.ForeColor = System.Drawing.Color.Black;
+            D.BackColor = System.Drawing.Color.White;
+            D.Size = new Size(60, 60);
+            D.Font = new Font("Microsoft Sans Serif", 12, FontStyle.Bold);
+            D.Text = "D";
+            D.Location = new Point(180, 250);
+            
+            Left.ForeColor = System.Drawing.Color.Black;
+            Left.BackColor = System.Drawing.Color.White;
+            Left.Size = new Size(60, 60);
+            Left.Font = new Font("Microsoft Sans Serif", 12, FontStyle.Bold);
+            Left.Text = "Left";
+            Left.Location = new Point(350, 250);
+            
+            Right.ForeColor = System.Drawing.Color.Black;
+            Right.BackColor = System.Drawing.Color.White;
+            Right.Size = new Size(60, 60);
+            Right.Font = new Font("Microsoft Sans Serif", 12, FontStyle.Bold);
+            Right.Text = "Right";
+            Right.Location = new Point(420, 250);
+            
+            Space.ForeColor = System.Drawing.Color.Black;
+            Space.BackColor = System.Drawing.Color.White;
+            Space.Size = new Size(100, 50);
+            Space.Font = new Font("Microsoft Sans Serif", 12, FontStyle.Bold);
+            Space.Text = "Space";
+            Space.Location = new Point(200, 400);
+
             this.Controls.Add(Instructions);
             Instructions.Show();
             Instructions.BringToFront();
             Instructions.Controls.Add(InstructionsTitle);
             Instructions.Controls.Add(Start);
             Instructions.Controls.Add(Menu);
+            Instructions.Controls.Add(A);
+            Instructions.Controls.Add(D);
+            Instructions.Controls.Add(Left);
+            Instructions.Controls.Add(Right);
+            Instructions.Controls.Add(Space);
+            Instructions.Controls.Add(Move);
+            Instructions.Controls.Add(Shoot);
         }
         #endregion
 
@@ -595,13 +655,13 @@ namespace AlienAttack
             Button Menu = new Button();
             Button Start = new Button();
             ListView scoreList = new ListView();
-
+            
             ScorePanel.Size = new Size(784, 561);
             ScorePanel.Location = new Point(0, 0);
             ScorePanel.BackColor = System.Drawing.Color.Black;
 
-            ScoreTitle.Text = "Controls";
-            ScoreTitle.Location = new Point(277, 159);
+            ScoreTitle.Text = "High Scores";
+            ScoreTitle.Location = new Point(200, 100);
             ScoreTitle.ForeColor = System.Drawing.Color.White;
             ScoreTitle.Size = new Size(400, 55);
             ScoreTitle.Font = new Font("Microsoft Sans Serif", 36, FontStyle.Bold);
