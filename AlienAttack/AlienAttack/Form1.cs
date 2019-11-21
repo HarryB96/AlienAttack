@@ -7,6 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.EntityFrameworkCore.Sqlite;
 
 namespace AlienAttack
 {
@@ -27,11 +30,18 @@ namespace AlienAttack
         int hitsRemaining = 3;
         Panel StartPanel = new Panel();
         Panel Instructions = new Panel();
+        Panel ScorePanel = new Panel();
+        Panel WinPanel = new Panel();
+
+        TextBox enterName = new TextBox();
+        Button submit = new Button();
+        Label doThis = new Label();
+        public static List<HighScore> HighScoreList = new List<HighScore>();
 
         public Form1()
         {
             InitializeComponent();
-            StartPanelShow();
+            StartPanelShow(StartPanel);
         }
 
         #region Buttons
@@ -39,6 +49,7 @@ namespace AlienAttack
         {
             StartPanel.Dispose();
             Instructions.Dispose();
+            ScorePanel.Dispose();
             makeBasicEnemies(6);
             timer1.Start();
             timer2.Start();
@@ -49,10 +60,27 @@ namespace AlienAttack
             InstructionsShow();
         }
 
-        private void menu_Click(object sender, EventArgs e)
+        private void Scores_Click(object sender, EventArgs e)
         {
-            StartPanelShow();
+            ScorePanelShow();
+        }
+
+        private void Submit_Click(object sender, EventArgs e)
+        {
+            string name = enterName.Text;
+            var newScore = new HighScore(name, ((score + time) * hitsRemaining));
+            addScore(newScore);
+            WinPanel.Controls.Remove(submit);
+            WinPanel.Controls.Remove(enterName);
+            WinPanel.Controls.Remove(doThis);
+        }
+
+        private void Menu_Click(object sender, EventArgs e)
+        {
+
+            StartPanel.Show();
             Instructions.Hide();
+            ScorePanel.Hide();
         }
         private void Restart_Click(object sender, EventArgs e)
         {
@@ -377,17 +405,16 @@ namespace AlienAttack
         {
             timer1.Stop();
             timer2.Stop();
-            
         }
 
         #region WinPanel
         private void WinPanelShow()
         {
-            Panel WinPanel = new Panel();
             Label WinTitle = new Label();
             Label FinalScore = new Label();
             Button Replay = new Button();
             Button Quit = new Button();
+            
 
             WinPanel.Size = new Size(784, 561);
             WinPanel.Location = new Point(0, 0);
@@ -415,12 +442,27 @@ namespace AlienAttack
             Quit.Text = "Quit";
             Quit.Click += Quit_Click;
 
+            doThis.Text = "Enter Name";
+            doThis.Location = new Point(300, 300);
+            doThis.ForeColor = System.Drawing.Color.White;
+            doThis.Size = new Size(200, 20);
+            doThis.Font = new Font("Microsoft Sans Serif", 12, FontStyle.Regular);
+
+            enterName.Location = new Point(300, 337);
+            submit.Location = new Point(300, 400);
+            submit.BackColor = System.Drawing.Color.AliceBlue;
+            submit.Text = "Submit";
+            submit.Click += Submit_Click;
+
             this.Controls.Add(WinPanel);
             WinPanel.BringToFront();
             WinPanel.Controls.Add(WinTitle);
             WinPanel.Controls.Add(FinalScore);
             WinPanel.Controls.Add(Replay);
             WinPanel.Controls.Add(Quit);
+            WinPanel.Controls.Add(doThis);
+            WinPanel.Controls.Add(enterName);
+            WinPanel.Controls.Add(submit);
         }
         #endregion
 
@@ -461,16 +503,17 @@ namespace AlienAttack
         #endregion
 
         #region StartPanel
-        private void StartPanelShow()
+        private void StartPanelShow(Panel panel)
         {
             Label MenuTitle = new Label();
             Button Start = new Button();
             Button Instructions = new Button();
             Button Quit = new Button();
+            Button Score = new Button();
 
-            StartPanel.Size = new Size(784, 561);
-            StartPanel.Location = new Point(0, 0);
-            StartPanel.BackColor = System.Drawing.Color.Black;
+            panel.Size = new Size(784, 561);
+            panel.Location = new Point(0, 0);
+            panel.BackColor = System.Drawing.Color.Black;
 
             MenuTitle.Text = "Alien Attack";
             MenuTitle.Location = new Point(144, 67);
@@ -488,17 +531,24 @@ namespace AlienAttack
             Instructions.Text = "Controls";
             Instructions.Click += Instructions_Click;
 
+            Score.Location = new Point(350, 370);
+            Score.BackColor = System.Drawing.Color.AliceBlue;
+            Score.Text = "Scores";
+            Score.Click += Scores_Click;
+
             Quit.Location = new Point(350, 406);
             Quit.BackColor = System.Drawing.Color.AliceBlue;
             Quit.Text = "Quit";
             Quit.Click += Quit_Click;
 
-            this.Controls.Add(StartPanel);
-            StartPanel.BringToFront();
-            StartPanel.Controls.Add(MenuTitle);
-            StartPanel.Controls.Add(Start);
-            StartPanel.Controls.Add(Instructions);
-            StartPanel.Controls.Add(Quit);
+            this.Controls.Add(panel);
+            panel.BringToFront();
+            panel.Show();
+            panel.Controls.Add(MenuTitle);
+            panel.Controls.Add(Start);
+            panel.Controls.Add(Instructions);
+            panel.Controls.Add(Score);
+            panel.Controls.Add(Quit);
         }
         #endregion
 
@@ -527,7 +577,7 @@ namespace AlienAttack
             Menu.Location = new Point(0, 0);
             Menu.BackColor = System.Drawing.Color.AliceBlue;
             Menu.Text = "Menu";
-            Menu.Click += menu_Click;
+            Menu.Click += Menu_Click;
 
             this.Controls.Add(Instructions);
             Instructions.Show();
@@ -537,5 +587,60 @@ namespace AlienAttack
             Instructions.Controls.Add(Menu);
         }
         #endregion
+
+        #region ScorePanel
+        public void ScorePanelShow()
+        {
+            Label ScoreTitle = new Label();
+            Button Menu = new Button();
+            Button Start = new Button();
+            ListView scoreList = new ListView();
+
+            ScorePanel.Size = new Size(784, 561);
+            ScorePanel.Location = new Point(0, 0);
+            ScorePanel.BackColor = System.Drawing.Color.Black;
+
+            ScoreTitle.Text = "Controls";
+            ScoreTitle.Location = new Point(277, 159);
+            ScoreTitle.ForeColor = System.Drawing.Color.White;
+            ScoreTitle.Size = new Size(400, 55);
+            ScoreTitle.Font = new Font("Microsoft Sans Serif", 36, FontStyle.Bold);
+
+            Start.Location = new Point(700, 0);
+            Start.BackColor = System.Drawing.Color.AliceBlue;
+            Start.Text = "Start";
+            Start.Click += button1_Click;
+
+            Menu.Location = new Point(0, 0);
+            Menu.BackColor = System.Drawing.Color.AliceBlue;
+            Menu.Text = "Menu";
+            Menu.Click += Menu_Click;
+
+            using (var db = new ScoreDbContext())
+            {
+                HighScoreList = db.HighScores.ToList();
+            }
+            HighScoreList.ForEach(h => scoreList.Items.Add(h.Name + " " + h.Score, h.ID));
+            scoreList.Location = new Point(200, 220);
+            scoreList.Size = new Size(400, 200);
+
+            this.Controls.Add(ScorePanel);
+            ScorePanel.Show();
+            ScorePanel.BringToFront();
+            ScorePanel.Controls.Add(ScoreTitle);
+            ScorePanel.Controls.Add(Start);
+            ScorePanel.Controls.Add(Menu);
+            ScorePanel.Controls.Add(scoreList);
+        }
+        #endregion
+
+        static void addScore(HighScore h)
+        {
+            using (var db = new ScoreDbContext())
+            {
+                db.HighScores.Add(h);
+                db.SaveChanges();
+            }
+        }
     }
 }
