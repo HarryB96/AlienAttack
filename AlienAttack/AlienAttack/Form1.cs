@@ -297,8 +297,11 @@ namespace AlienAttack
             }
             if (time > 0)
             {
-                time -= timer2.Interval / 100;
-                label3.Text = "Time: " + time/10;
+                if (timer1.Enabled)
+                {
+                    time -= timer2.Interval / 100;
+                    label3.Text = "Time: " + time / 10;
+                }
             }
             else
             {
